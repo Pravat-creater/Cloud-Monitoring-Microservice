@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-monitor
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cloud-monitor
+  template:
+    metadata:
+      labels:
+        app: cloud-monitor
+    spec:
+      containers:
+        - name: cloud-monitor
+          image: your-dockerhub-username/cloud-monitor:latest
+          env:
+            - name: AWS_REGION
+              value: "ap-south-1"
+            - name: INSTANCE_ID
+              value: "i-1234567890abcdef0"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cloud-monitor-service
+spec:
+  selector:
+    app: cloud-monitor
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
